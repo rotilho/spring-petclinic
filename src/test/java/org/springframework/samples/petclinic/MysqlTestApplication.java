@@ -21,7 +21,7 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.testcontainers.mysql.MySQLContainer;
+import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 /**
@@ -35,9 +35,9 @@ public class MysqlTestApplication {
 	@ServiceConnection
 	@Profile("mysql")
 	@Bean
-	static MySQLContainer container() {
-		return new MySQLContainer(DockerImageName.parse("mysql:9.5"));
-	}
+ static MySQLContainer<?> container() {
+        return new MySQLContainer<>(DockerImageName.parse("mysql:8.0.33"));
+    }
 
 	public static void main(String[] args) {
 		SpringApplication.run(PetClinicApplication.class, "--spring.profiles.active=mysql",

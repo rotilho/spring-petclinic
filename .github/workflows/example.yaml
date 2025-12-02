@@ -1,0 +1,44 @@
+name: GraalVM -Pagent Petclinic tests
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  graalvm-tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        graalvm_java:
+          - '21'
+          - '24'
+          - '25'
+
+    name: Petclinic tests (GraalVM Java ${{ matrix.graalvm_java }})
+
+    steps:
+      - name: Checkout Spring Petclinic at fixed commit
+        uses: actions/checkout@v4
+
+      - name: Set up GraalVM (Java ${{ matrix.graalvm_java }})
+        uses: graalvm/setup-graalvm@v1
+        with:
+          distribution: graalvm
+          java-version: ${{ matrix.graalvm_java }}
+          native-image-musl: true
+          cache: gradle
+
+      - name: Show Java / GraalVM version
+        run: |
+          java -version
+          native-image --version
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Run tests with -Pagent on GraalVM
+        run: ./gradlew test -Pagent --no-daemon --stacktrace
