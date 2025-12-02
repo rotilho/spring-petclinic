@@ -41,4 +41,4 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run tests with -Pagent on GraalVM
-        run: ./gradlew test -Pagent --no-daemon --stacktrace
+        run: ./gradlew test -Pagent -PjavaVersion=${{ matrix.graalvm_java }} --no-daemon --stacktrace
